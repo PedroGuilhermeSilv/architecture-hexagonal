@@ -60,4 +60,4 @@ ignore = ["PLR013", "EXE002", "EM101", "EM102"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 python_files = ["test_*.py", "*_test.py", "tests.py", "test.py"]
-DJANGO_SETTINGS_MODULE = "framework.settings"
+DJANGO_SETTINGS_MODULE = "src.framework.settings"

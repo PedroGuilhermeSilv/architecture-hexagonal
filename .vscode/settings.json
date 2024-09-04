@@ -16,5 +16,6 @@
     "editor.tabSize": 4,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
+    "cSpell.enabled": false
   }
   

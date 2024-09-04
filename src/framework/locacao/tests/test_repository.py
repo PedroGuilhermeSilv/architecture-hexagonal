@@ -1,8 +1,7 @@
 import pytest
 from src.core.jogo.domain.entity_jogo import Jogo
 from src.core.jogo.domain.entity_jogo_plataforma import JogoPlataforma
-from src.core.locacao.domain.item_locacao.entity_item_locacao import ItemLocacao
-from src.core.locacao.domain.locacao.entity_locacao import Locacao
+from src.core.locacao.domain.locacao.entity_locacao import ItemLocacao, Locacao
 from src.core.plataforma.domain.entity_plataforma import Plataforma
 from src.framework.jogo.models import Jogo as JogoModel
 from src.framework.jogo.models import JogoPlataforma as JogoPlataformaModel
