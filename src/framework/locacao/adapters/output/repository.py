@@ -1,4 +1,5 @@
 from django.db import transaction
+from src.core.locacao.domain.locacao.entity_locacao import ItemLocacao
 from src.core.locacao.ports.output.locacao_repositoy import Locacao, LocacaoRepository
 from src.framework.jogo.models import Jogo as JogoModel
 from src.framework.jogo.models import JogoPlataforma as JogoPlataformaModel
@@ -8,8 +9,6 @@ from src.framework.plataforma.models import Plataforma as PlataformaModel
 
 
 class DjangoORMRepository(LocacaoRepository):
-    def __init__(self):
-        self.model = LocacaoModel
 
     def save(self, locacao: Locacao) -> Locacao:
         with transaction.atomic():
@@ -36,10 +35,70 @@ class DjangoORMRepository(LocacaoRepository):
                     },
                 )
 
-                ItemLocacaoModel.objects.create(
+                ItemLocacaoModel.objects.get_or_create(
                     locacao=locacao_model,
                     jogo_plataforma=jogo_plataforma,
                     dias=item.dias,
                     quantidade=item.quantidade,
                 )
         return locacao
+
+    def update(self, locacao: Locacao) -> Locacao:
+        with transaction.atomic():
+            locacao_model = LocacaoModel.objects.get(id=locacao.id)
+            locacao_model.data = locacao.data
+            ItemLocacaoModel.objects.filter(locacao=locacao_model).delete()
+            for item in locacao.itens:
+                jogo, _ = JogoModel.objects.get_or_create(
+                    id=item.jogo_plataforma.jogo.id,
+                    defaults={"titulo": item.jogo_plataforma.jogo.titulo},
+                )
+                plataforma, _ = PlataformaModel.objects.get_or_create(
+                    id=item.jogo_plataforma.plataforma.id,
+                    defaults={"nome": item.jogo_plataforma.plataforma.nome},
+                )
+
+                jogo_plataforma, _ = JogoPlataformaModel.objects.get_or_create(
+                    id=item.jogo_plataforma.id,
+                    defaults={
+                        "jogo": jogo,
+                        "plataforma": plataforma,
+                        "preco_diario": item.jogo_plataforma.preco_diario,
+                    },
+                )
+
+                ItemLocacaoModel.objects.get_or_create(
+                    locacao=locacao_model,
+                    jogo_plataforma=jogo_plataforma,
+                    dias=item.dias,
+                    quantidade=item.quantidade,
+                )
+                locacao_model.save()
+        return self.get_by_id(locacao.id)
+
+    def get_by_id(self, id: int) -> Locacao:
+        locacao_model = LocacaoModel.objects.get(id=id)
+        intes = ItemLocacaoModel.objects.filter(locacao=locacao_model)
+        return Locacao(
+            id=locacao_model.id,
+            data=locacao_model.data,
+            itens=[
+                ItemLocacao(
+                    jogo_plataforma=JogoPlataformaModel(
+                        id=item.jogo_plataforma.id,
+                        jogo=JogoModel(
+                            id=item.jogo_plataforma.jogo.id,
+                            titulo=item.jogo_plataforma.jogo.titulo,
+                        ),
+                        plataforma=PlataformaModel(
+                            id=item.jogo_plataforma.plataforma.id,
+                            nome=item.jogo_plataforma.plataforma.nome,
+                        ),
+                        preco_diario=item.jogo_plataforma.preco_diario,
+                    ),
+                    dias=item.dias,
+                    quantidade=item.quantidade,
+                )
+                for item in intes
+            ],
+        )

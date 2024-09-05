@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from random import randint
 
 from src.core.jogo.domain.entity_jogo_plataforma import JogoPlataforma
 from src.core.locacao.domain.locacao.entity_locacao import Locacao
@@ -14,16 +15,16 @@ class ItemLocacao:
 
 @dataclass
 class InputLocacao:
-    id: int
     data: str
     itens: list[ItemLocacao]
+    id: int = field(default_factory=lambda: randint(1, 1000))
 
 
 class CriarLocacao:
     def __init__(self, locacao_repository: LocacaoRepository):
         self.locacao_repository = locacao_repository
 
-    def criar(self, locacao: InputLocacao) -> Locacao:
+    def execute(self, locacao: InputLocacao) -> Locacao:
         _locacao = Locacao(
             id=locacao.id,
             data=locacao.data,

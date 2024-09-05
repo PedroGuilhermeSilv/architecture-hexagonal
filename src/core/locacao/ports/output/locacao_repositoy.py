@@ -7,3 +7,11 @@ class LocacaoRepository(ABC):
     @abstractmethod
     def save(self, locacao: Locacao) -> Locacao:
         pass
+
+    @abstractmethod
+    def get_by_id(self, id: int) -> Locacao:
+        pass
+
+    @abstractmethod
+    def update(self, locacao: Locacao) -> Locacao:
+        pass

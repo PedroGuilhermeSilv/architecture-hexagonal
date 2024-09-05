@@ -29,7 +29,7 @@ def test_save_locacao():
         quantidade=1,
         locacao=locacao,
     )
-
+    locacao.itens.append(item_locacao)
     repository = DjangoORMRepository()
 
     # Act

@@ -1,7 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from random import randint
 
 
 @dataclass
 class Plataforma:
-    id: int
     nome: str
+    id: int = field(default_factory=lambda: randint(1, 1000))
