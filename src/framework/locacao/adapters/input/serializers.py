@@ -56,15 +56,24 @@ class CustoTotalOutputSerializer(serializers.Serializer):
     valor = serializers.FloatField()
 
 
+class ClienteSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    nome = serializers.CharField()
+    email = serializers.EmailField()
+    telefone = serializers.CharField()
+
+
 class LocacaoInputSerializer(serializers.Serializer):
     data = serializers.DateField()
     itens = ItemLocacaoInputSerializer(many=True)
+    cliente = ClienteSerializer()
 
 
 class LocacaoOutputSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     data = serializers.DateField()
     itens = ItemLocacaoOutputSerializer(many=True)
+    cliente = ClienteSerializer()
 
     def to_representation(self, instance):
         ##convertenndo datetime para date

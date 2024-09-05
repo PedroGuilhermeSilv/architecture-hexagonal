@@ -1,7 +1,5 @@
 from dataclasses import dataclass, field
 
-from core.locacao.domain.entity.entity_locacao import Locacao
-
 
 @dataclass
 class Cliente:
@@ -9,5 +7,5 @@ class Cliente:
     email: str
     telefone: str
     nome: str
-    senha: str
-    locacao: list[Locacao] = field(default_factory=list)
+    locacao: list["Locacao"] = field(default_factory=list)  # type: ignore # noqa: F821
+    senha: str | None = None

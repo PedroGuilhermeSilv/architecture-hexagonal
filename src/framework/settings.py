@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "src.framework.locacao",
     "src.framework.jogo",
     "src.framework.plataforma",
+    "src.framework.cliente",
 ]
 
 MIDDLEWARE = [

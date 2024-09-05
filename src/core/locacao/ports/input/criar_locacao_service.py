@@ -1,8 +1,8 @@
-from dataclasses import dataclass, field
-from random import randint
+from dataclasses import dataclass
 
+from src.core.client.domain.entity_client import Cliente
 from src.core.jogo.domain.entity_jogo_plataforma import JogoPlataforma
-from src.core.locacao.domain.locacao.entity_locacao import Locacao
+from src.core.locacao.domain.entity_locacao import Locacao
 from src.core.locacao.ports.output.locacao_repositoy import LocacaoRepository
 
 
@@ -14,10 +14,18 @@ class ItemLocacao:
 
 
 @dataclass
+class InputCliente:
+    id: int
+    nome: str
+    email: str
+    telefone: str
+
+
+@dataclass
 class InputLocacao:
     data: str
     itens: list[ItemLocacao]
-    id: int = field(default_factory=lambda: randint(1, 1000))
+    cliente: InputCliente
 
 
 class CriarLocacao:
@@ -26,7 +34,6 @@ class CriarLocacao:
 
     def execute(self, locacao: InputLocacao) -> Locacao:
         _locacao = Locacao(
-            id=locacao.id,
             data=locacao.data,
             itens=[
                 ItemLocacao(
@@ -36,5 +43,11 @@ class CriarLocacao:
                 )
                 for item in locacao.itens
             ],
+            cliente=Cliente(
+                id=locacao.cliente.id,
+                nome=locacao.cliente.nome,
+                email=locacao.cliente.email,
+                telefone=locacao.cliente.telefone,
+            ),
         )
         return self.locacao_repository.save(_locacao)

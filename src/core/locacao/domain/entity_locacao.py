@@ -3,6 +3,7 @@ from datetime import datetime
 from random import randint
 from typing import Optional
 
+from src.core.client.domain.entity_client import Cliente
 from src.core.jogo.domain.entity_jogo_plataforma import JogoPlataforma
 
 
@@ -16,6 +17,7 @@ class ItemLocacao:
 
 @dataclass
 class Locacao:
+    cliente: Cliente
     id: int = field(default_factory=lambda: randint(1, 1000))
     data: datetime = field(default_factory=datetime.now)
     itens: list[ItemLocacao] | None = field(default_factory=list)  # noqa: F821

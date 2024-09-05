@@ -2,7 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 from src.core.jogo.domain.entity_jogo import Jogo
-from src.core.locacao.domain.locacao.entity_locacao import JogoPlataforma
+from src.core.locacao.domain.entity_locacao import JogoPlataforma
 from src.core.locacao.ports.input.adicionar_jogo_service import (
     AdicionarJogoService,
     InputItemLocacao,
@@ -12,7 +12,7 @@ from src.framework.locacao.adapters.input.serializers import (
     ItemLocacaoUpdateSerializer,
     LocacaoOutputSerializer,
 )
-from src.framework.locacao.adapters.output.repository import DjangoORMRepository
+from src.framework.locacao.adapters.output.repository import DjangoORMLocacaoRepository
 
 
 class AddItemInLocacaoViewSet(viewsets.ViewSet):
@@ -21,7 +21,9 @@ class AddItemInLocacaoViewSet(viewsets.ViewSet):
             id = int(pk)
             serializer = ItemLocacaoUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            service = AdicionarJogoService(locacao_repository=DjangoORMRepository())
+            service = AdicionarJogoService(
+                locacao_repository=DjangoORMLocacaoRepository(),
+            )
 
             input = InputItemLocacao(
                 jogo_plataforma=JogoPlataforma(

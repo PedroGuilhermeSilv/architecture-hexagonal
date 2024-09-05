@@ -1,6 +1,8 @@
 from django.db import transaction
-from src.core.locacao.domain.locacao.entity_locacao import ItemLocacao
+from src.core.client.domain.entity_client import Cliente
+from src.core.locacao.domain.entity_locacao import ItemLocacao
 from src.core.locacao.ports.output.locacao_repositoy import Locacao, LocacaoRepository
+from src.framework.cliente.models import Cliente as ClienteModel
 from src.framework.jogo.models import Jogo as JogoModel
 from src.framework.jogo.models import JogoPlataforma as JogoPlataformaModel
 from src.framework.locacao.models import ItemLocacao as ItemLocacaoModel
@@ -8,12 +10,16 @@ from src.framework.locacao.models import Locacao as LocacaoModel
 from src.framework.plataforma.models import Plataforma as PlataformaModel
 
 
-class DjangoORMRepository(LocacaoRepository):
+class DjangoORMLocacaoRepository(LocacaoRepository):
     def save(self, locacao: Locacao) -> Locacao:
         with transaction.atomic():
+            cliente = ClienteModel.objects.get(
+                email=locacao.cliente.email,
+            )
             locacao_model = LocacaoModel.objects.create(
                 id=locacao.id,
                 data=locacao.data,
+                cliente=cliente,
             )
             for item in locacao.itens:
                 jogo, _ = JogoModel.objects.get_or_create(
@@ -44,6 +50,7 @@ class DjangoORMRepository(LocacaoRepository):
 
     def update(self, locacao: Locacao) -> Locacao:
         with transaction.atomic():
+
             locacao_model = LocacaoModel.objects.get(id=locacao.id)
             locacao_model.data = locacao.data
             ItemLocacaoModel.objects.filter(locacao=locacao_model).delete()
@@ -78,6 +85,7 @@ class DjangoORMRepository(LocacaoRepository):
     def get_by_id(self, id: int) -> Locacao:
         locacao_model = LocacaoModel.objects.get(id=id)
         intes = ItemLocacaoModel.objects.filter(locacao=locacao_model)
+        cliente = ClienteModel.objects.get(id=locacao_model.cliente.id)
         return Locacao(
             id=locacao_model.id,
             data=locacao_model.data,
@@ -100,4 +108,11 @@ class DjangoORMRepository(LocacaoRepository):
                 )
                 for item in intes
             ],
+            cliente=Cliente(
+                id=cliente.id,
+                nome=cliente.nome,
+                email=cliente.email,
+                telefone=cliente.telefone,
+                senha=cliente.senha,
+            ),
         )

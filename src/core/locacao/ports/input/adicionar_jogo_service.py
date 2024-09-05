@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from src.core.jogo.domain.entity_jogo_plataforma import JogoPlataforma
-from src.core.locacao.domain.locacao.entity_locacao import Locacao
+from src.core.locacao.domain.entity_locacao import Locacao
 from src.core.locacao.ports.output.locacao_repositoy import LocacaoRepository
 
 

@@ -2,6 +2,7 @@ import json
 
 import pytest
 from rest_framework.test import APIClient
+from src.framework.cliente.models import Cliente as ClienteModel
 from src.framework.jogo.models import Jogo as JogoModel
 from src.framework.locacao.models import ItemLocacao as ItemLocacaoModel
 from src.framework.locacao.models import JogoPlataforma as JogoPlataformaModel
@@ -16,7 +17,12 @@ STATUS_CODE_OK = 200
 class TestCreateAPI:
     def test_criar_locacao(self):
         # Arrange
-
+        cliente = ClienteModel.objects.create(
+            nome="Cliente Teste",
+            email="teste@hotmail.com",
+            telefone="999999999",
+            senha="123456",
+        )
         client = APIClient()
         data = {
             "data": "2023-04-01",
@@ -48,6 +54,12 @@ class TestCreateAPI:
                     "quantidade": 1,
                 },
             ],
+            "cliente": {
+                "id": cliente.id,
+                "nome": cliente.nome,
+                "email": cliente.email,
+                "telefone": cliente.telefone,
+            },
         }
 
         # Act
@@ -80,14 +92,24 @@ class TestCreateAPI:
                 item["jogo_plataforma"]["preco_diario"],
             )
 
+            assert locacao_on_db.cliente.id == data["cliente"]["id"]
+            assert locacao_on_db.cliente.nome == data["cliente"]["nome"]
+            assert locacao_on_db.cliente.email == data["cliente"]["email"]
+            assert locacao_on_db.cliente.telefone == data["cliente"]["telefone"]
+
 
 @pytest.mark.django_db
 class TestUpdateLocacao:
     def test_add_jogo_in_plataforma(self):
         # Arrange
         client = APIClient()
-
-        locacao = LocacaoModel.objects.create(data="2023-04-01")
+        cliente = ClienteModel.objects.create(
+            nome="Cliente Teste",
+            email="teste@hotmail.com",
+            telefone="999999999",
+            senha="123456",
+        )
+        locacao = LocacaoModel.objects.create(data="2023-04-01", cliente=cliente)
         item = ItemLocacaoModel.objects.create(
             locacao=locacao,
             dias=5,
@@ -147,14 +169,25 @@ class TestUpdateLocacao:
             itens[1]["jogo_plataforma"]["preco_diario"],
         )
 
+        assert response.json()["cliente"]["id"] == cliente.id
+        assert response.json()["cliente"]["nome"] == cliente.nome
+        assert response.json()["cliente"]["email"] == cliente.email
+        assert response.json()["cliente"]["telefone"] == cliente.telefone
+
 
 @pytest.mark.django_db
 class TestCalcularCustoTotal:
     def test_get_custo_total(self):
         # Arrange
         client = APIClient()
+        cliente = ClienteModel.objects.create(
+            nome="Cliente Teste",
+            email="teste@hotmail.com",
+            telefone="999999999",
+            senha="123456",
+        )
 
-        locacao = LocacaoModel.objects.create(data="2023-04-01")
+        locacao = LocacaoModel.objects.create(data="2023-04-01", cliente=cliente)
         item = ItemLocacaoModel.objects.create(
             locacao=locacao,
             dias=5,
