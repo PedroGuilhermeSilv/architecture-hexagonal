@@ -40,7 +40,7 @@ class DjangoORMRepository(LocacaoRepository):
                     dias=item.dias,
                     quantidade=item.quantidade,
                 )
-        return locacao
+        return self.get_by_id(locacao_model.id)
 
     def update(self, locacao: Locacao) -> Locacao:
         with transaction.atomic():
