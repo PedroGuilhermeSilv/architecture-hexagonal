@@ -15,6 +15,7 @@ dependencies = [
     "architecture-hexagonal @ file:///${PROJECT_ROOT}/",
     "psycopg2-binary>=2.9.9",
     "python-dotenv>=1.0.1",
+    "whitenoise>=6.7.0",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"

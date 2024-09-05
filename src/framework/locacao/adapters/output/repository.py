@@ -9,7 +9,6 @@ from src.framework.plataforma.models import Plataforma as PlataformaModel
 
 
 class DjangoORMRepository(LocacaoRepository):
-
     def save(self, locacao: Locacao) -> Locacao:
         with transaction.atomic():
             locacao_model = LocacaoModel.objects.create(
@@ -18,16 +17,16 @@ class DjangoORMRepository(LocacaoRepository):
             )
             for item in locacao.itens:
                 jogo, _ = JogoModel.objects.get_or_create(
-                    id=item.jogo_plataforma.jogo.id,
+                    titulo=item.jogo_plataforma.jogo.titulo,
                     defaults={"titulo": item.jogo_plataforma.jogo.titulo},
                 )
                 plataforma, _ = PlataformaModel.objects.get_or_create(
-                    id=item.jogo_plataforma.plataforma.id,
+                    nome=item.jogo_plataforma.plataforma.nome,
                     defaults={"nome": item.jogo_plataforma.plataforma.nome},
                 )
 
                 jogo_plataforma, _ = JogoPlataformaModel.objects.get_or_create(
-                    id=item.jogo_plataforma.id,
+                    jogo=jogo,
                     defaults={
                         "jogo": jogo,
                         "plataforma": plataforma,
