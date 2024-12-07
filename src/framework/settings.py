@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "src.framework.jogo",
     "src.framework.plataforma",
     "src.framework.cliente",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [

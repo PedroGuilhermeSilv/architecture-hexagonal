@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -16,6 +17,10 @@ from src.framework.locacao.adapters.output.repository import DjangoORMLocacaoRep
 
 
 class AddItemInLocacaoViewSet(viewsets.ViewSet):
+    @swagger_auto_schema(
+        request_body=ItemLocacaoUpdateSerializer,
+        responses={201: LocacaoOutputSerializer},
+    )
     def partial_update(self, request: Request, pk=None) -> Response:
         try:
             id = int(pk)

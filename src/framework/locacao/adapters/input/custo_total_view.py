@@ -1,3 +1,4 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -11,6 +12,9 @@ from src.framework.locacao.adapters.output.repository import DjangoORMLocacaoRep
 
 
 class CustoTotalViewSet(viewsets.ViewSet):
+    @swagger_auto_schema(
+        responses={200: CustoTotalOutputSerializer},
+    )
     def retrieve(self, request: Request, pk=None) -> Response:
         try:
             id = int(pk)
@@ -21,7 +25,6 @@ class CustoTotalViewSet(viewsets.ViewSet):
             response = CustoTotalOutputSerializer(output)
 
         except Exception as error:
-            print(error)
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": str(error)},

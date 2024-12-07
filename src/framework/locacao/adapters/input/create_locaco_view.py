@@ -1,13 +1,13 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
-from src.core.client.domain.entity_client import Cliente
 from src.core.jogo.domain.entity_jogo import Jogo
 from src.core.locacao.domain.entity_locacao import ItemLocacao, JogoPlataforma
 from src.core.locacao.ports.input.criar_locacao_service import (
     CriarLocacao,
+    InputCliente,
     InputLocacao,
-    InputCliente
 )
 from src.core.plataforma.domain.entity_plataforma import Plataforma
 from src.framework.locacao.adapters.input.serializers import (
@@ -18,6 +18,10 @@ from src.framework.locacao.adapters.output.repository import DjangoORMLocacaoRep
 
 
 class CreateLocacaoViewSet(viewsets.ViewSet):
+    @swagger_auto_schema(
+        request_body=LocacaoInputSerializer,
+        responses={201: LocacaoOutputSerializer},
+    )
     def create(self, request: Request) -> Response:
         try:
             serializer = LocacaoInputSerializer(data=request.data)
@@ -55,7 +59,6 @@ class CreateLocacaoViewSet(viewsets.ViewSet):
             response = LocacaoOutputSerializer(output)
 
         except Exception as error:
-            print(error)
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": str(error)},

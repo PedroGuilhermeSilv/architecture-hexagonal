@@ -188,7 +188,7 @@ class TestCalcularCustoTotal:
         )
 
         locacao = LocacaoModel.objects.create(data="2023-04-01", cliente=cliente)
-        item = ItemLocacaoModel.objects.create(
+        ItemLocacaoModel.objects.create(
             locacao=locacao,
             dias=5,
             quantidade=2,
